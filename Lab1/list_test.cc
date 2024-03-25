@@ -220,6 +220,19 @@ TEST_CASE("List_Iterator")
     ++itA;
     CHECK_THROWS(++itA); // samma som tidigare, alltså det är här list.end pekar
   }
+  SECTION("--")
+  {
+    List list{5, 6, 7};
+    List::List_iterator itA{list.end()};
+    --itA;
+    CHECK(*itA == 7);
+    --itA;
+    CHECK(*itA == 6);
+    --itA;
+    CHECK(*itA == 5);
+    CHECK_THROWS(--itA); // samma som tidigare, alltså det är här list.begin pekar
+  }
+
   SECTION("For-loop")
   {
     stringstream ss{};

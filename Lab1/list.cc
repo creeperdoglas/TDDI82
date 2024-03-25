@@ -3,36 +3,6 @@
 #include <vector>
 #include <utility>
 #include <sstream>
-// Information om komplettering:
-//   Kompletteringen kan gälla hela filen och alla filer i labben,
-//   så får ni komplettering på en sak, kan samma sak förekomma på
-//   fler ställen utan att jag skrivit det.
-//
-//   Komplettering lämnas in via sendlab efter senast en (1) vecka
-//
-//   Har ni frågor om kompletteringen kan ni maila mig på:
-//   Malte.Nilsson@liu.se
-
-// Koden kompilerade inte pga ändring av filnamn (fixade det)
-/// tack så mycket, måste ha råkat skickat in fel verision :/
-
-// Komplettering: Koden kompilerar med varningar.
-/// fixat, glömde bort att kompilera med kursens kompileringsflaggor
-/// blev många varningat, kan dock ha ändrat vissa saker i onödan men inga varningar nu och alla testfall går igenom
-
-// Komplettering: friend för utströmmen är inte en okej lösning i den här kursen.
-/// fixade, däremot fixar jag inte friend för iterator då det skulle krävas extra arbete för att göra det utan att använda friend, för något som ändå inte behövs i uppgiften
-/// hoppas det är okej
-/// skapade en to_string metod för att kunna skriva ut listan utan att behöva använda friend, skulla nog kunna ha använt mig utav iteratorn faktist men antar att eftersom det visade
-/// sig att de inte var nödvändigt så använder jag mig inte av den
-
-// Hur kommer det sig att ni har implementerat en List_Iterator?
-// svara vid komplettering:
-/// även fast i den här uppgiften en list_Iterator inte är nödvändig för det listan ska göra så började vi med att implementera det i början för att kunna
-/// iterera genom listan, detta hände på grund av att jag läste igenom lite för snabbt "Däremot gör en sentinel att implementationen kan förenklas genom att specialfall utgår. Den ger även fördel när en bidirectional iterator ska skapas."
-/// antog att detta betydde att vi förväntades att implementera en iterator, däremot när jag insåg att det inte var nödvändigt så lät jag det vara då den redan i stort
-/// sett var klar, så skrev lite testfall till den för att visa att den funkar. tänkte att om något så visar det att vi har förstått hur det fungerar, däremot så visar det även hur dåligt jag läser igenom intruktioner :/
-/// notera att på grund av detta så är den inte bidirectional, det skulle krävas en operator -- för det.
 using namespace std;
 // standradkonstruktor
 List::List() : first(new Element()), last(new Element())
