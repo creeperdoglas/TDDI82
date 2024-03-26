@@ -2,42 +2,48 @@
 #include <iterator>
 #include <utility>
 #include <stdexcept>
+#include <memory>
 
 struct List::Node
 {
     Node() = default;
-    Node(int v, Node* p, Node* n)
+    Node(int v, Node *p, Node *n)
         : value{v}, prev{p}, next{n} {}
-    int value {};
-    Node * prev {};
-    Node * next {};
+    int value{};
+
+    // prev ej nödvändig för unique_ptr
+    // eftersom prev endast är för att hålla koll på föregående nod
+    Node *prev{};
+    std::unique_ptr<Node> next{};
 };
 
 List::List()
-    : head{ new Node{} }, tail{}, sz{}
+    // head äger en resurs, tail pekar på en resurs, därför bör head vara en unique_ptr
+    // tror iallfall det, ta en titt senare
+    : head{std::make_unique<Node>()}, tail{}, sz{}
 {
-    head->next = new Node{0, head, nullptr};
-    tail = head->next;
+    head->next = std::make_unique<Node>(0, std::move(head), nullptr);
+    tail = head->next.get();
 }
 
-List::List(List const & other)
+List::List(List const &other)
     : List{}
 {
-    for (Node * tmp {other.head->next}; tmp != other.tail ; )
+    for (Node *tmp{other.head->next.get()}; tmp != other.tail;)
     {
         push_back(tmp->value);
-        tmp = tmp->next;
+        tmp = tmp->next.get();
     }
 }
-List::List(List && tmp) noexcept
-    :List{}
+List::List(List &&tmp) noexcept
+    : List{}
 {
     swap(tmp);
 }
 List::List(std::initializer_list<int> lst)
     : List{}
 {
-    for ( auto val : lst )
+    for (auto val : lst)
     {
         push_back(val);
     }
@@ -45,29 +51,31 @@ List::List(std::initializer_list<int> lst)
 
 void List::push_front(int value)
 {
-    Node * old_first { head->next };
-    head->next = new Node{value, head, head->next};
-    old_first->prev = head->next;
+    std::unique_ptr<Node> old_first{std::move(head->next)};
+    head->next = std::make_unique<Node>(value, std::move(head), std::move(old_first));
+    old_first->prev = head->next.get();
     ++sz;
 }
 void List::push_back(int value)
 {
-    Node * old_last { tail->prev };
-    old_last->next = new Node{value, old_last, tail};
-    tail->prev = old_last->next;
+    Node *old_last = tail->prev;
+    std::unique_ptr<Node> newNode = std::make_unique<Node>(value, old_last, nullptr);
+    Node *newNodeRaw = newNode.get();
+    old_last->next = std::move(newNode);
+    tail->prev = newNodeRaw;
     ++sz;
 }
 
 bool List::empty() const noexcept
 {
-    return head->next == tail;
+    return head->next.get() == tail;
 }
 
 int List::back() const noexcept
 {
     return tail->prev->value;
 }
-int & List::back() noexcept
+int &List::back() noexcept
 {
     return tail->prev->value;
 }
@@ -76,23 +84,23 @@ int List::front() const noexcept
 {
     return head->next->value;
 }
-int & List::front() noexcept
+int &List::front() noexcept
 {
     return head->next->value;
 }
 
-int & List::at(int idx)
+int &List::at(int idx)
 {
     return const_cast<int &>(static_cast<List const *>(this)->at(idx));
 }
-int const & List::at(int idx) const
+int const &List::at(int idx) const
 {
     if (idx >= sz)
         throw std::out_of_range{"Index not found"};
-    Node * tmp {head->next};
-    while ( idx > 0 )
+    Node *tmp{head->next.get()};
+    while (idx > 0)
     {
-        tmp = tmp->next;
+        tmp = tmp->next.get();
         --idx;
     }
     return tmp->value;
@@ -103,7 +111,7 @@ int List::size() const noexcept
     return sz;
 }
 
-void List::swap(List & other) noexcept
+void List::swap(List &other) noexcept
 {
     using std::swap;
     swap(head, other.head);
@@ -111,13 +119,13 @@ void List::swap(List & other) noexcept
     swap(sz, other.sz);
 }
 
-List & List::operator=(List const & rhs) &
+List &List::operator=(List const &rhs) &
 {
     List{rhs}.swap(*this);
     return *this;
 }
 
-List & List::operator=(List && rhs)& noexcept
+List &List::operator=(List &&rhs) & noexcept
 {
     swap(rhs);
     return *this;

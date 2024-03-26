@@ -58,3 +58,36 @@ public:
   List sub(std::initializer_list<int> indices);
 };
 std::ostream &operator<<(std::ostream &os, const List &list);
+
+// struct List::Node
+// {
+//   Node() = default;
+//   Node(int v, std::unique_ptr<Node> p, std::unique_ptr<Node> n)
+//       : value{v}, prev{std::move(p)}, next{std::move(n)} {}
+//   int value{};
+//   std::unique_ptr<Node> prev{};
+//   std::unique_ptr<Node> next{};
+// };
+
+// List::List()
+//     : head{std::make_unique<Node>()}, tail{}, sz{}
+// {
+//   head->next = std::make_unique<Node>(0, std::move(head), nullptr);
+//   tail = std::move(head->next);
+// }
+
+// void List::push_front(int value)
+// {
+//   std::unique_ptr<Node> old_first = std::move(head->next);
+//   head->next = std::make_unique<Node>(value, std::move(head), std::move(old_first));
+//   old_first->prev = std::move(head->next);
+//   ++sz;
+// }
+
+// void List::push_back(int value)
+// {
+//   std::unique_ptr<Node> old_last = std::move(tail->prev);
+//   old_last->next = std::make_unique<Node>(value, std::move(old_last), std::move(tail));
+//   tail->prev = std::move(old_last->next);
+//   ++sz;
+// }
