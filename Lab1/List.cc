@@ -7,8 +7,8 @@
 struct List::Node
 {
     Node() = default;
-    Node(int v, Node *p, Node *n)
-        : value{v}, prev{p}, next{n} {}
+    Node(int v, Node *p, std::unique_ptr<Node> n)
+        : value{v}, prev{p}, next{std::move(n)} {}
     int value{};
 
     // prev ej nödvändig för unique_ptr

@@ -2,7 +2,7 @@
 #define LIST_H
 
 #include <initializer_list>
-
+#include <memory>
 class List
 {
     // flyttade upp private då kompilator går uppifrån och ner, node behöver alltså deklareras innan min iterator då den annars inte kommer känna igen node
