@@ -2,10 +2,10 @@
 #include "List.h"
 
 #include "catch.hpp"
-
-TEST_CASE( "Create list" )
+// kör a.exe --success  för att se mer info
+TEST_CASE("Create list")
 {
-    List lst{1,4,2,6,8,9};
+    List lst{1, 4, 2, 6, 8, 9};
     CHECK(lst.at(2) == 2);
     CHECK(lst.size() == 6);
     List l2;
@@ -14,4 +14,3 @@ TEST_CASE( "Create list" )
     CHECK(l2.front() == lst.front());
     CHECK(l2.back() == lst.back());
 }
-

@@ -5,9 +5,21 @@
 #include <memory>
 class List
 {
-    // flyttade upp private då kompilator går uppifrån och ner, node behöver alltså deklareras innan min iterator då den annars inte kommer känna igen node
+    // flyttade upp private då kompilator går uppifrån och ner, node behöver alltså deklareras innan min iterator då den annars inte kommer känna igen node, möjligtvis att endast kompilator fel?
+    // också för att få unique ptr för head måste node deklareras innan head, går ej med en forward deklaration, så flyttade den.
 private:
-    struct Node;
+    struct Node
+    {
+        Node() = default;
+        Node(int v, Node *p, std::unique_ptr<Node> n)
+            : value{v}, prev{p}, next{std::move(n)} {}
+        int value{};
+
+        // prev ej nödvändig för unique_ptr
+        // eftersom prev endast är för att hålla koll på föregående nod
+        Node *prev{};
+        std::unique_ptr<Node> next{};
+    };
     std::unique_ptr<Node> head;
     Node *tail{};
     int sz{};
