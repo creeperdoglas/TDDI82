@@ -50,16 +50,28 @@ public:
 
     void swap(List &other) noexcept;
 
+    // från tidigare labb (gjorde en iterator till den även fast det ej var ett krav) lagt till o ändrat sånt som behövs för att iteratorn passar till den här labben o kraven
     class List_iterator
     {
     public:
+        using iterator_category = std::bidirectional_iterator_tag;
+        using value_type = int;
+        using difference_type = std::ptrdiff_t;
+        using pointer = value_type *;
+        using reference = value_type &;
+
         friend class List;
         List_iterator(const List_iterator &) = default;
         List_iterator &operator=(List_iterator const &);
         List_iterator &operator++();
+        List_iterator operator++(int);
+
         List_iterator &operator--();
+        List_iterator operator--(int);
+
         bool operator==(List_iterator const &it) const;
         bool operator!=(List_iterator const &it) const;
+
         int &operator*() const;
         explicit List_iterator(Node *p = nullptr) : pos(p) {}
 
@@ -71,4 +83,4 @@ public:
     List_iterator insert(List_iterator position, const int &N);
 };
 
-#endif // LIST_H
+#endif
