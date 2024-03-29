@@ -69,7 +69,6 @@ public:
     List_iterator begin() const;
     List_iterator end() const;
     List_iterator insert(List_iterator position, const int &N);
-    List sub(std::initializer_list<int> indices);
 };
 
 #endif // LIST_H

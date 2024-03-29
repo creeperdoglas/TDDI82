@@ -3,6 +3,7 @@
 #include <utility>
 #include <stdexcept>
 #include <memory>
+// blev jobbigt att testa minnesläckor med drmemory, då catch.hpp verisionen som kursen använder (2017) har minnesläckor.
 
 // struct List::Node
 // {
