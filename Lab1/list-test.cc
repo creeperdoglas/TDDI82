@@ -17,6 +17,17 @@ TEST_CASE("Create list")
     CHECK(l2.back() == lst.back());
 }
 
+// TEST_CASE("Iterator Backwards")
+// {
+//     List lst{2, 3, 1, 5};
+//     auto rb{make_reverse_iterator(lst.end())};
+//     auto re{make_reverse_iterator(lst.begin())};
+//     for (auto it = rb; it != re; ++it)
+//     {
+//         cout << *it << ' ';
+//     }
+// }
+
 TEST_CASE("Iterator Reverse")
 {
     List lst{2, 3, 1, 5};
