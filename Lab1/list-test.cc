@@ -55,7 +55,7 @@ TEST_CASE("Reverse Iterator")
         --size;
     }
 }
-
+// skiter i fler kommentarer, onödigt då så pass uppenbart vas som testas
 TEST_CASE("Iterator")
 {
     List_NS::List<int> l1{1, 7, 3, 4, 5};
