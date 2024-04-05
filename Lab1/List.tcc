@@ -3,7 +3,7 @@
 #include <utility>
 #include <stdexcept>
 #include <memory>
-// har även testat att köra programmet med drmemory och verkar som inga minnesläckor
+// har även testat att köra programmet med drmemory och inga minnesläckor hittades
 
 //  i exempelvis den under så är template <typename T>  en template-deklaration där T reprsenterar en parameter och är en "placeholder" , gör så att T kan vara olika datattyper
 //  i functionsdeklarationen speciferas det att det tillhör List klassen inom List_NS namnrymden (se testfallen för att se varför) och funktionen är mallad(?) med en datatyp T"
