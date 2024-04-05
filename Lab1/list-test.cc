@@ -4,6 +4,7 @@
 
 #include "catch.hpp"
 
+// Skapar en lista med element och kontrollerar tillgång via index och listans storlek
 TEST_CASE("Create list")
 {
     List_NS::List<int> lst{1, 4, 2, 6, 8, 9};
@@ -16,6 +17,7 @@ TEST_CASE("Create list")
     CHECK(l2.back() == lst.back());
 }
 
+// Testar funktionen för att byta innehållet mellan två listor
 TEST_CASE("Swap")
 {
     List_NS::List<int> l1{1, 4, 2, 6, 8, 9};
@@ -27,6 +29,7 @@ TEST_CASE("Swap")
     CHECK(l2.size() == 6);
 }
 
+// Lägger till element i början och slutet av listan och verifierar listans storlek och innehåll
 TEST_CASE("Push front and push back")
 {
     List_NS::List<int> l1{1, 4, 2, 6, 8, 9};
@@ -38,16 +41,12 @@ TEST_CASE("Push front and push back")
     CHECK(l1.size() == 8);
 }
 
+// Går igenom listan baklänges med en omvänd iterator
 TEST_CASE("Reverse Iterator")
 {
     List_NS::List<int> l1{5, 4, 3, 7, 1};
     auto rb{std::make_reverse_iterator(l1.end())};
     auto re{std::make_reverse_iterator(l1.begin())};
-
-    /*for ( auto it = rb; it != re; ++it ) //test print terminal
-    {
-    std::cout << *it << ' ';
-    }*/
 
     int size{4};
     for (auto it{rb}; it != re; ++it)
@@ -62,11 +61,6 @@ TEST_CASE("Iterator")
     List_NS::List<int> l1{1, 7, 3, 4, 5};
     auto rb{l1.begin()};
     auto re{l1.end()};
-
-    /*for ( auto it = rb; it != re; ++it ) //test print terminal
-    {
-    std::cout << *it << ' ';
-    }*/
 
     int size{0};
     for (auto it{rb}; it != re; ++it)

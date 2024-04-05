@@ -3,7 +3,7 @@
 
 #include <initializer_list>
 #include <memory>
-#include <iterator>
+#include <iterator> //för att använda std::bidirectional_iterator_tag
 
 namespace List_NS
 {

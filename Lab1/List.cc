@@ -4,6 +4,18 @@
 #include <stdexcept>
 #include <memory>
 
+// svar på frågorna:
+// listan startar en tom lista med en head pekare som pekar till nullptr och en tail pekare.Det betyder att i det initiala tillståndet innan några element har lagts till finns det inga noder. då inga sentinels
+
+// När ett element läggs till i början av listan (push_front), skapas en ny nod som blir det nya huvudet (head) av listan. Den nya nodens next pekare kommer att peka på den tidigare huvudnoden. Om listan var tom innan elementet lades till, blir denna nya nod både huvud och svans (tail) av listan. detta innebär att elementet placeras precis före det första elementet som redan finns i listan.
+
+// är ett element läggs till sist i listan (push_back), skapas en ny nod som placeras efter den nuvarande sista noden. Om listan var tom, kallas push_front för att lägga till den första noden istället, vilket gör den nya noden både till huvudet och svansen av listan. Om listan inte var tom, blir den nya noden den sista noden, och dess next pekare kommer att vara nullptr, medan prev pekaren länkar till den tidigare sista noden. Kort sagt, elementet placeras efter det sista elementet som redan finns i listan.
+
+// Det finns två versioner av at-funktionen för att tillhandahålla tillgång till element i listan både för icke-const och const instanser av listan:
+// används med icke-const instanser av listan. Detta möjliggör att man kan modifiera det element som at-funktionen returnerar en referens till. medans den med const gör så at inte modifierar listan
+
+// Icke-const versionen av at-funktionen hämtar ett värde från listan men också modifiera det returnerade värdet. Detta uppnås genom att returnera en referens till värdet (T&) snarare än värdet självt. Icke-const versionen använder const_cast och static_cast för att kasta bort const-qualifier från den const versionen av at-metoden. Detta gör det möjligt att återanvända logiken i den const-versionen för att hitta det önskade elementet men sedan returnera det som en icke-const referens, vilket tillåter ändringar av elementets värde.
+
 /*struct List::Node
 {
     Node() = default;
@@ -15,7 +27,8 @@
 };*/
 
 List::List()
-    : head{std::make_unique<Node>()}, tail{head.get()}, sz{}
+    : head{std::make_unique<Node>()},
+      tail{head.get()}, sz{}
 {
     // head->next = new Node{0, head, nullptr};
     // tail = head->next;

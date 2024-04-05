@@ -55,8 +55,18 @@ template <typename T>
 void List_NS::List<T>::push_front(T value)
 {
     // Node * old_first { head->next.get() };
+
+    // Skapar en ny nod i början av listan med det givna värdet.
+    // Den nya nodens 'next' pekare sätts till den nuvarande 'head' noden,
+    // och den nuvarande 'head' nodens 'prev' pekare uppdateras till den nya noden.
     head = std::make_unique<Node>(value, nullptr, head.release());
+
+    // den nya nodens 'next' pekare (som nu är den gamla head-noden)
+    // pekar tillbaka på den nya noden som nu är head.
     head.get()->next.get()->prev = head.get();
+
+    // Om listan var tom innan insättningen, uppdatera även 'tail' pekaren
+    // att peka på den nya noden eftersom listan nu endast innehåller en nod.
     // old_first->prev = head->next.get();
     if (sz == 0)
     {
@@ -69,6 +79,12 @@ void List_NS::List<T>::push_front(T value)
 template <typename T>
 void List_NS::List<T>::push_back(T value)
 {
+
+    // Kontrollerar om listan är tom.
+    // Om listan är tom, använd 'push_front' för att lägga till elementet,
+    // eftersom det i en tom lista inte spelar någon roll om vi lägger till
+    // elementet i början eller i slutet.
+
     /*Node * old_last { tail->prev };
     old_last->next = std::make_unique<Node>(value, old_last, tail);
     tail->prev = old_last->next.get();*/
@@ -78,8 +94,14 @@ void List_NS::List<T>::push_back(T value)
     }
     else
     {
+        // För en icke-tom lista, frigör 'next' pekaren för noden innan 'tail',
+        // och skapa sedan en ny nod som sätter dess 'prev' till den nuvarande sista noden
+        // och dess 'next' till 'tail'. Den nuvarande sista nodens 'next' uppdateras till den nya noden.
         tail->prev->next.release();
         tail->prev->next = std::make_unique<Node>(value, tail->prev, tail);
+
+        // Uppdaterar 'tail->prev' att peka på den nya noden,
+        // vilket lägger till den nya noden i slutet av listan
         tail->prev = tail->prev->next.get();
         ++sz;
     }
@@ -165,17 +187,25 @@ List_NS::List<T> &List_NS::List<T>::operator=(List &&rhs) & noexcept
 }
 
 // iterator
+// Konstruktör
+// Initierar iteratorn så att den pekar på den angivna noden.
 
 template <typename T>
 List_NS::List<T>::List_Iterator::List_Iterator(Node *ptr)
-    : curr(ptr) {}
+    : curr(ptr)
+{
+}
 
+// Dereferensoperator *
+// Returnerar en referens till värdet som noden pekar på.
 template <typename T>
 typename List_NS::List<T>::List_Iterator::reference List_NS::List<T>::List_Iterator::operator*() const
 {
     return curr->value;
 }
 
+// Prefix Increment Operator ++
+// Flyttar iteratorn till nästa nod i listan och returnerar en referens till iteratorn.
 template <typename T>
 typename List_NS::List<T>::List_Iterator &List_NS::List<T>::List_Iterator::operator++()
 {
@@ -186,6 +216,8 @@ typename List_NS::List<T>::List_Iterator &List_NS::List<T>::List_Iterator::opera
     }
 }
 
+// Postfix Increment Operator ++
+// Skapar en temporär kopia av iteratorn, flyttar sedan iteratorn till nästa nod, och returnerar kopian.
 template <typename T>
 typename List_NS::List<T>::List_Iterator List_NS::List<T>::List_Iterator::operator++(int)
 {
