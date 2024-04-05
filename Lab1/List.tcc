@@ -229,6 +229,8 @@ typename List_NS::List<T>::List_Iterator List_NS::List<T>::List_Iterator::operat
     }
 }
 
+// prefix decrement operator
+// Flyttar iteratorn till den föregående noden i listan och returnerar en referens till iteratorn.
 template <typename T>
 typename List_NS::List<T>::List_Iterator &List_NS::List<T>::List_Iterator::operator--()
 {
@@ -239,6 +241,8 @@ typename List_NS::List<T>::List_Iterator &List_NS::List<T>::List_Iterator::opera
     }
 }
 
+// postfix decrement operator
+// Skapar en temporär kopia av iteratorn, flyttar sedan iteratorn till den föregående noden, och returnerar kopian
 template <typename T>
 typename List_NS::List<T>::List_Iterator List_NS::List<T>::List_Iterator::operator--(int)
 {
@@ -249,25 +253,33 @@ typename List_NS::List<T>::List_Iterator List_NS::List<T>::List_Iterator::operat
         return tmp;
     }
 }
-
+// equality operator
+// kollar  om de pekar på samma nod
 template <typename T>
 bool List_NS::List<T>::List_Iterator::operator==(const List_Iterator &rhs) const
 {
     return curr == rhs.curr;
 }
 
+// inequality operator
+// kollar om de inte pekar på samma nod
 template <typename T>
 bool List_NS::List<T>::List_Iterator::operator!=(const List_Iterator &rhs) const
 {
     return curr != rhs.curr;
 }
 
+// begin
+// returnerar en iterator som pekar på första noden i listan
 template <typename T>
 typename List_NS::List<T>::List_Iterator List_NS::List<T>::begin() const
 {
     return List_Iterator(head.get());
 }
 
+// end
+// returnerar en iterator som pekar på noden efter sista noden i listan
+// används som en sentinel, däremot har inte listan några sentinels
 template <typename T>
 typename List_NS::List<T>::List_Iterator List_NS::List<T>::end() const
 {
