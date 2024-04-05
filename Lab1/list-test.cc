@@ -147,7 +147,7 @@ TEST_CASE("Iterator operator !=")
 
     CHECK(*it1 != *it2);
 }
-
+// antar att denna egentlgien testar *?? fråga assistent
 TEST_CASE("Iterator operator ->")
 {
     List_NS::List<int> l1{1, 5, 3, 8};
@@ -185,3 +185,10 @@ TEST_CASE("Namespaces")
     List l1;
     List_NS::List<int> l2;
 }
+
+// TEST_CASE("->")
+// {
+//     List_NS::List<int> l1{1, 5, 3, 8};
+//     auto it = l1.begin();
+//     CHECK(it->size == 4);
+// }

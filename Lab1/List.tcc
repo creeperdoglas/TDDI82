@@ -280,3 +280,12 @@ typename List_NS::List<T>::List_Iterator List_NS::List<T>::end() const
 {
     return List_Iterator(tail);
 }
+// template <typename T>
+
+// varför inte funka :(
+template <typename T>
+typename List_NS::List<T>::List_Iterator::Pointer List_NS::List<T>::List_Iterator::operator->() const
+{
+    // return &(operator*());
+    return curr->value;
+}
