@@ -72,7 +72,7 @@ namespace List_NS
 
             bool operator==(const List_Iterator &) const;
             bool operator!=(const List_Iterator &) const;
-            Pointer operator->() const;
+            pointer operator->() const;
 
         private:
             List_Iterator();

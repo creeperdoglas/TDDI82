@@ -207,8 +207,8 @@ typename List_NS::List<T>::List_Iterator &List_NS::List<T>::List_Iterator::opera
     if (curr->next != nullptr)
     {
         curr = curr->next.get();
-        return *this;
     }
+    return *this;
 }
 
 // Postfix Increment Operator ++
@@ -220,8 +220,8 @@ typename List_NS::List<T>::List_Iterator List_NS::List<T>::List_Iterator::operat
     if (curr->next != nullptr)
     {
         curr = curr->next.get();
-        return tmp;
     }
+    return tmp;
 }
 
 // prefix decrement operator
@@ -232,8 +232,8 @@ typename List_NS::List<T>::List_Iterator &List_NS::List<T>::List_Iterator::opera
     if (curr->prev != nullptr)
     {
         curr = curr->prev;
-        return *this;
     }
+    return *this;
 }
 
 // postfix decrement operator
@@ -245,8 +245,8 @@ typename List_NS::List<T>::List_Iterator List_NS::List<T>::List_Iterator::operat
     if (curr->prev != nullptr)
     {
         curr = curr->prev;
-        return tmp;
     }
+    return tmp;
 }
 // equality operator
 // kollar  om de pekar på samma nod
@@ -283,9 +283,13 @@ typename List_NS::List<T>::List_Iterator List_NS::List<T>::end() const
 // template <typename T>
 
 // varför inte funka :(
+// template <typename T>
+// typename List_NS::List<T>::List_Iterator::Pointer List_NS::List<T>::List_Iterator::operator->() const
+// {
+//     return &(operator*());
+// }
 template <typename T>
-typename List_NS::List<T>::List_Iterator::Pointer List_NS::List<T>::List_Iterator::operator->() const
+typename List_NS::List<T>::List_Iterator::pointer List_NS::List<T>::List_Iterator::operator->() const
 {
-    // return &(operator*());
-    return curr->value;
+    return &(operator*());
 }
