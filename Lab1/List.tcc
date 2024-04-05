@@ -3,20 +3,15 @@
 #include <utility>
 #include <stdexcept>
 #include <memory>
+// har även testat att köra programmet med drmemory och verkar som inga minnesläckor
 
-/*struct List::Node
-{
-    Node() = default;
-    Node(int v, Node* p, Node* n)
-        : value{v}, prev{p}, next{n} {}
-    int value {};
-    Node* prev {};
-    std::unique_ptr<List::Node> next {};
-};*/
+//  i exempelvis den under så är template <typename T>  en template-deklaration där T reprsenterar en parameter och är en "placeholder" , gör så att T kan vara olika datattyper
+//  i functionsdeklarationen speciferas det att det tillhör List klassen inom List_NS namnrymden (se testfallen för att se varför) och funktionen är mallad(?) med en datatyp T"
 
 template <typename T>
 List_NS::List<T>::List()
-    : head{std::make_unique<Node>()}, tail{head.get()}, sz{}
+    : head{std::make_unique<Node>()},
+      tail{head.get()}, sz{}
 {
     // head->next = new Node{0, head, nullptr};
     // tail = head->next;

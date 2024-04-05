@@ -41,7 +41,7 @@ TEST_CASE("Push front and push back")
     CHECK(l1.size() == 8);
 }
 
-// Går igenom listan baklänges med en omvänd iterator
+// Går igenom listan baklänges med en omvänd iterator, den från labb instruktioner
 TEST_CASE("Reverse Iterator")
 {
     List_NS::List<int> l1{5, 4, 3, 7, 1};
