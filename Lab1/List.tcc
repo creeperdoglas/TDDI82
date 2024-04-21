@@ -39,7 +39,7 @@ List_NS::List<T>::List()
 
 template <typename T>
 List_NS::List<T>::List(List const &other)
-    : List{}
+    : List()
 {
     for (Node *tmp{other.head.get()}; tmp != other.tail;)
     {
@@ -50,14 +50,15 @@ List_NS::List<T>::List(List const &other)
 
 template <typename T>
 List_NS::List<T>::List(List &&tmp) noexcept
-    : List{}
+    : List()
 {
     swap(tmp);
 }
 
 template <typename T>
 List_NS::List<T>::List(std::initializer_list<T> lst)
-    : List{}
+    : head{std::make_unique<Node>()},
+      tail{head.get()}, sz{0}
 {
     for (auto val : lst)
     {
@@ -263,7 +264,7 @@ bool List_NS::List<T>::List_Iterator::operator!=(const List_Iterator &rhs) const
 // begin
 // returnerar en iterator som pekar på första noden i listan
 template <typename T>
-typename List_NS::List<T>::List_Iterator List_NS::List<T>::begin() const
+typename List_NS::List<T>::List_Iterator List_NS::List<T>::begin()
 {
     return List_Iterator(head.get());
 }
@@ -271,7 +272,7 @@ typename List_NS::List<T>::List_Iterator List_NS::List<T>::begin() const
 // end
 // returnerar en iterator som pekar på noden efter sista noden i listan
 template <typename T>
-typename List_NS::List<T>::List_Iterator List_NS::List<T>::end() const
+typename List_NS::List<T>::List_Iterator List_NS::List<T>::end()
 {
     return List_Iterator(tail);
 }

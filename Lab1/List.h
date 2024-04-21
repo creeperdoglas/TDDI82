@@ -20,7 +20,9 @@
 // Komplettering: Flytta tillbaka implementationen av node till (t)cc-filen.
 // Initiera inte variabler i h filen utan gör det i datamedlemsinitieringslistan.
 // Alternativt skapa en tom destruktor för att undvika size_of problemet som antagligen gjorde att ni flyttade den till .h filen
-/// fixat
+/// fixat, om du även menade att inte initiera exempelvis head o tail osv så har jag inte eftersom det är väll okej att initiera på det sättet?
+/// kan ha missförstått vad du menade och kan ganska snabbt fixa det om det är så, men det är väll godtyckligt att göra så som jag gjort?
+/// dessa initialiseringar direkt i klassdefinitionen säkerställer att oavsett vilken konstruktör som anropas, kommer dessa medlemmar att ha dessa startvärden. är inte det det man vill att de ska göra?
 
 // Komplettering: Flytta ägarskapet med hjälp utav std::move istället för att använda .release
 
@@ -28,6 +30,7 @@
 /// fixat
 
 // Kommentar: att sätta const på t.ex. begin och end är missvisande eftersom det med en iterator går att ändra på listan.
+/// fixat
 
 // Noterade kommentaren vid end() "används som en sentinel, däremot har inte listan några sentinels"
 // Svar: En tom lista har två noder som skapas i konstruktorn. (sentinel nodes)
@@ -51,6 +54,7 @@ namespace List_NS
         List(List const &);
         List(List &&) noexcept;
         List(std::initializer_list<T>);
+        ~List(){}; // komplettering
 
         List &operator=(List const &) &;
         List &operator=(List &&) & noexcept;
@@ -100,8 +104,8 @@ namespace List_NS
             Node *curr{};
         };
 
-        List_Iterator begin() const;
-        List_Iterator end() const;
+        List_Iterator begin();
+        List_Iterator end();
     };
 }
 
