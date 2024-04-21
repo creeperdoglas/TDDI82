@@ -9,9 +9,28 @@
 //  i functionsdeklarationen speciferas det att det tillhör List klassen inom List_NS namnrymden (se testfallen för att se varför) och funktionen är mallad(?) med en datatyp T"
 
 template <typename T>
+struct List_NS::List<T>::Node
+{
+    // T value;
+    // std::unique_ptr<Node> next;
+    // Node *prev;
+
+    // Node(T value = T{}, Node *prev = nullptr, std::unique_ptr<Node> next = nullptr)
+    //     : value{value}, next{std::move(next)}, prev{prev}
+    // {
+    // }
+    Node() = default;
+    Node(T v, Node *p, Node *n)
+        : value{v}, prev{p}, next{n} {}
+    T value{};
+    Node *prev{};
+    std::unique_ptr<Node> next{};
+};
+
+template <typename T>
 List_NS::List<T>::List()
     : head{std::make_unique<Node>()},
-      tail{head.get()}, sz{}
+      tail{head.get()}, sz(0)
 {
     // head->next = new Node{0, head, nullptr};
     // tail = head->next;
@@ -49,20 +68,11 @@ List_NS::List<T>::List(std::initializer_list<T> lst)
 template <typename T>
 void List_NS::List<T>::push_front(T value)
 {
-    // Node * old_first { head->next.get() };
 
-    // Skapar en ny nod i början av listan med det givna värdet.
-    // Den nya nodens 'next' pekare sätts till den nuvarande 'head' noden,
-    // och den nuvarande 'head' nodens 'prev' pekare uppdateras till den nya noden.
     head = std::make_unique<Node>(value, nullptr, head.release());
 
-    // den nya nodens 'next' pekare (som nu är den gamla head-noden)
-    // pekar tillbaka på den nya noden som nu är head.
     head.get()->next.get()->prev = head.get();
 
-    // Om listan var tom innan insättningen, uppdatera även 'tail' pekaren
-    // att peka på den nya noden eftersom listan nu endast innehåller en nod.
-    // old_first->prev = head->next.get();
     if (sz == 0)
     {
         tail->prev = head.get();
@@ -75,28 +85,14 @@ template <typename T>
 void List_NS::List<T>::push_back(T value)
 {
 
-    // Kontrollerar om listan är tom.
-    // Om listan är tom, använd 'push_front' för att lägga till elementet,
-    // eftersom det i en tom lista inte spelar någon roll om vi lägger till
-    // elementet i början eller i slutet.
-
-    /*Node * old_last { tail->prev };
-    old_last->next = std::make_unique<Node>(value, old_last, tail);
-    tail->prev = old_last->next.get();*/
     if (empty())
     {
         push_front(value);
     }
     else
     {
-        // För en icke-tom lista, frigör 'next' pekaren för noden innan 'tail',
-        // och skapa sedan en ny nod som sätter dess 'prev' till den nuvarande sista noden
-        // och dess 'next' till 'tail'. Den nuvarande sista nodens 'next' uppdateras till den nya noden.
         tail->prev->next.release();
         tail->prev->next = std::make_unique<Node>(value, tail->prev, tail);
-
-        // Uppdaterar 'tail->prev' att peka på den nya noden,
-        // vilket lägger till den nya noden i slutet av listan
         tail->prev = tail->prev->next.get();
         ++sz;
     }
@@ -274,20 +270,12 @@ typename List_NS::List<T>::List_Iterator List_NS::List<T>::begin() const
 
 // end
 // returnerar en iterator som pekar på noden efter sista noden i listan
-// används som en sentinel, däremot har inte listan några sentinels
 template <typename T>
 typename List_NS::List<T>::List_Iterator List_NS::List<T>::end() const
 {
     return List_Iterator(tail);
 }
-// template <typename T>
 
-// varför inte funka :(
-// template <typename T>
-// typename List_NS::List<T>::List_Iterator::Pointer List_NS::List<T>::List_Iterator::operator->() const
-// {
-//     return &(operator*());
-// }
 template <typename T>
 typename List_NS::List<T>::List_Iterator::pointer List_NS::List<T>::List_Iterator::operator->() const
 {
