@@ -21,7 +21,7 @@
 // Initiera inte variabler i h filen utan gör det i datamedlemsinitieringslistan.
 // Alternativt skapa en tom destruktor för att undvika size_of problemet som antagligen gjorde att ni flyttade den till .h filen
 /// fixat, om du även menade att inte initiera exempelvis head o tail osv så har jag inte eftersom det är väll okej att initiera på det sättet?
-/// kan ha missförstått vad du menade och kan ganska snabbt fixa det om det är så, men det är väll godtyckligt att göra så som jag gjort?
+/// kan ha missförstått vad du menade, men det är väll godtyckligt att göra så som jag gjort?
 /// dessa initialiseringar direkt i klassdefinitionen säkerställer att oavsett vilken konstruktör som anropas, kommer dessa medlemmar att ha dessa startvärden. är inte det det man vill att de ska göra?
 
 // Komplettering: Flytta ägarskapet med hjälp utav std::move istället för att använda .release
@@ -34,7 +34,7 @@
 
 // Noterade kommentaren vid end() "används som en sentinel, däremot har inte listan några sentinels"
 // Svar: En tom lista har två noder som skapas i konstruktorn. (sentinel nodes)
-/// juste
+/// juste vet inte riktig vad jag tänkte, kommer inte ens ihåg att jag skrev det
 
 namespace List_NS
 {
