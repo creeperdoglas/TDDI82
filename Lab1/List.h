@@ -53,14 +53,14 @@ namespace List_NS
         List();
         List(List const &);
         List(List &&) noexcept;
-        List(std::initializer_list<T>);
+        List(std::initializer_list<T> const &lst);
         ~List(){}; // komplettering
 
         List &operator=(List const &) &;
         List &operator=(List &&) & noexcept;
 
-        void push_front(T);
-        void push_back(T);
+        void push_front(T const &value);
+        void push_back(T const &value);
 
         T back() const noexcept;
         T &back() noexcept;

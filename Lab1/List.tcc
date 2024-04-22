@@ -11,37 +11,28 @@
 template <typename T>
 struct List_NS::List<T>::Node
 {
-    // T value;
-    // std::unique_ptr<Node> next;
-    // Node *prev;
-
-    // Node(T value = T{}, Node *prev = nullptr, std::unique_ptr<Node> next = nullptr)
-    //     : value{value}, next{std::move(next)}, prev{prev}
-    // {
-    // }
     Node() = default;
-    Node(T v, Node *p, Node *n)
-        : value{v}, prev{p}, next{n} {}
+    Node(T v, Node *p, std::unique_ptr<Node> n)
+        : value{v}, prev{p}, next{std::move(n)} {}
     T value{};
-    Node *prev{};
     std::unique_ptr<Node> next{};
+    Node *prev{};
 };
 
 template <typename T>
 List_NS::List<T>::List()
-    : head{std::make_unique<Node>()},
-      tail{head.get()}, sz(0)
+    : head{new Node{}}, tail{}, sz{}
 {
-    // head->next = new Node{0, head, nullptr};
-    // tail = head->next;
-    // tail = head.get();
+    T tmp{};
+    head->next = std::make_unique<Node>(tmp, head.get(), nullptr);
+    tail = head->next.get();
 }
 
 template <typename T>
-List_NS::List<T>::List(List const &other)
-    : List()
+List_NS::List<T>::List(List_NS::List<T> const &other)
+    : List{}
 {
-    for (Node *tmp{other.head.get()}; tmp != other.tail;)
+    for (Node *tmp{other.head->next.get()}; tmp != other.tail;)
     {
         push_back(tmp->value);
         tmp = tmp->next.get();
@@ -49,16 +40,15 @@ List_NS::List<T>::List(List const &other)
 }
 
 template <typename T>
-List_NS::List<T>::List(List &&tmp) noexcept
-    : List()
+List_NS::List<T>::List(List_NS::List<T> &&tmp) noexcept
+    : List{}
 {
     swap(tmp);
 }
 
 template <typename T>
-List_NS::List<T>::List(std::initializer_list<T> lst)
-    : head{std::make_unique<Node>()},
-      tail{head.get()}, sz{0}
+List_NS::List<T>::List(std::initializer_list<T> const &lst)
+    : List{}
 {
     for (auto val : lst)
     {
@@ -67,42 +57,27 @@ List_NS::List<T>::List(std::initializer_list<T> lst)
 }
 
 template <typename T>
-void List_NS::List<T>::push_front(T value)
+void List_NS::List<T>::push_front(T const &value)
 {
-
-    head = std::make_unique<Node>(value, nullptr, head.release());
-
-    head.get()->next.get()->prev = head.get();
-
-    if (sz == 0)
-    {
-        tail->prev = head.get();
-    }
-
+    Node *old_first{head->next.get()};
+    head->next = std::make_unique<Node>(value, head.get(), std::move(head->next));
+    old_first->prev = head->next.get();
     ++sz;
 }
 
 template <typename T>
-void List_NS::List<T>::push_back(T value)
+void List_NS::List<T>::push_back(T const &value)
 {
-
-    if (empty())
-    {
-        push_front(value);
-    }
-    else
-    {
-        tail->prev->next.release();
-        tail->prev->next = std::make_unique<Node>(value, tail->prev, tail);
-        tail->prev = tail->prev->next.get();
-        ++sz;
-    }
+    Node *old_last{this->tail->prev};
+    old_last->next = std::make_unique<Node>(value, old_last, std::move(old_last->next));
+    tail->prev = old_last->next.get();
+    ++sz;
 }
 
 template <typename T>
 bool List_NS::List<T>::empty() const noexcept
 {
-    return head.get() == tail;
+    return head->next.get() == tail;
 }
 
 template <typename T>
@@ -120,19 +95,19 @@ T &List_NS::List<T>::back() noexcept
 template <typename T>
 T List_NS::List<T>::front() const noexcept
 {
-    return head->value;
+    return head->next->value;
 }
 
 template <typename T>
 T &List_NS::List<T>::front() noexcept
 {
-    return head->value;
+    return head->next->value;
 }
 
 template <typename T>
 T &List_NS::List<T>::at(int idx)
 {
-    return const_cast<T &>(static_cast<List const &>(*this).at(idx));
+    return const_cast<T &>(static_cast<List_NS::List<T> const *>(this)->at(idx));
 }
 
 template <typename T>
@@ -140,7 +115,7 @@ T const &List_NS::List<T>::at(int idx) const
 {
     if (idx >= sz)
         throw std::out_of_range{"Index not found"};
-    Node *tmp{head.get()};
+    Node *tmp{head->next.get()};
     while (idx > 0)
     {
         tmp = tmp->next.get();
@@ -156,7 +131,7 @@ int List_NS::List<T>::size() const noexcept
 }
 
 template <typename T>
-void List_NS::List<T>::swap(List &other) noexcept
+void List_NS::List<T>::swap(List_NS::List<T> &other) noexcept
 {
     using std::swap;
     swap(head, other.head);
@@ -165,14 +140,14 @@ void List_NS::List<T>::swap(List &other) noexcept
 }
 
 template <typename T>
-List_NS::List<T> &List_NS::List<T>::operator=(List const &rhs) &
+List_NS::List<T> &List_NS::List<T>::operator=(List<T> const &rhs) &
 {
     List{rhs}.swap(*this);
     return *this;
 }
 
 template <typename T>
-List_NS::List<T> &List_NS::List<T>::operator=(List &&rhs) & noexcept
+List_NS::List<T> &List_NS::List<T>::operator=(List<T> &&rhs) & noexcept
 {
     swap(rhs);
     return *this;
