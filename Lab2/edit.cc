@@ -159,8 +159,9 @@ vector<string> Edit::substitute(filtered_arguments filtered_args, vector<string>
   return new_text;
 }
 
-// vector<string> Edit::remove(filtered_arguments filtered_args, vector<string> text)
-// {
+// gammla remove, funkade inte pga att tmp alltid blev 1 pga att den var i for loopen, och då out of range kastas vid 0 eller 1 så funkade det inte
+//  vector<string> Edit::remove(filtered_arguments filtered_args, vector<string> text)
+//  {
 
 //   vector<string> param{filtered_args.parameters};
 //   vector<string> flag{filtered_args.flags};
