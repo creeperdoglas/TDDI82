@@ -16,15 +16,18 @@
 //   Malte.Nilsson@liu.se
 
 // Komplettering: Eftersom listan nu kan innehålla vilken typ som helst ska vi undvika onödiga kopieringar. Se över all er kod! (Det gäller även loopar, returtyper, etc)
+/// hittade fel i den tidigare implementationen av push back och front, men då jag gjorde om hela för move istället för release
+/// passade jag på att fixa onödig kopiering
 
 // Komplettering: Flytta tillbaka implementationen av node till (t)cc-filen.
 // Initiera inte variabler i h filen utan gör det i datamedlemsinitieringslistan.
 // Alternativt skapa en tom destruktor för att undvika size_of problemet som antagligen gjorde att ni flyttade den till .h filen
-/// fixat, om du även menade att inte initiera exempelvis head o tail osv så har jag inte eftersom det är väll okej att initiera på det sättet?
-/// kan ha missförstått vad du menade, men det är väll godtyckligt att göra så som jag gjort?
-/// dessa initialiseringar direkt i klassdefinitionen säkerställer att oavsett vilken konstruktör som anropas, kommer dessa medlemmar att ha dessa startvärden. är inte det det man vill att de ska göra?
+/// fixat
 
 // Komplettering: Flytta ägarskapet med hjälp utav std::move istället för att använda .release
+/// fixat, men det gjorde så jag blev tvungen att ändra noden, vilket skapade problem med push back, front och iteratorn så har skrivit om
+/// extremt mycket, tror det finns någon del jag ändrade som inte riktigt behövdes, men fick det ej att funka och skrev om cäldigt mycket
+///  i ren desperation
 
 // Kommentar: difference_type är typen på avståndet mellan två iteratorer, och borde därför vara int eller ptrdiff_t.
 /// fixat

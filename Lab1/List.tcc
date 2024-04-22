@@ -12,7 +12,7 @@ template <typename T>
 struct List_NS::List<T>::Node
 {
     Node() = default;
-    Node(T v, Node *p, std::unique_ptr<Node> n)
+    Node(T const &v, Node *p, std::unique_ptr<Node> n)
         : value{v}, prev{p}, next{std::move(n)} {}
     T value{};
     std::unique_ptr<Node> next{};
@@ -21,10 +21,9 @@ struct List_NS::List<T>::Node
 
 template <typename T>
 List_NS::List<T>::List()
-    : head{new Node{}}, tail{}, sz{}
+    : head{std::make_unique<Node>()}, tail{}, sz{}
 {
-    T tmp{};
-    head->next = std::make_unique<Node>(tmp, head.get(), nullptr);
+    head->next = std::make_unique<Node>(T{}, head.get(), nullptr);
     tail = head->next.get();
 }
 
@@ -32,10 +31,10 @@ template <typename T>
 List_NS::List<T>::List(List_NS::List<T> const &other)
     : List{}
 {
-    for (Node *tmp{other.head->next.get()}; tmp != other.tail;)
+    for (Node *tmp{other.head->next.get()}; tmp != other.tail; tmp = tmp->next.get())
     {
         push_back(tmp->value);
-        tmp = tmp->next.get();
+        // tmp = tmp->next.get();
     }
 }
 
@@ -50,7 +49,7 @@ template <typename T>
 List_NS::List<T>::List(std::initializer_list<T> const &lst)
     : List{}
 {
-    for (auto val : lst)
+    for (const auto val : lst)
     {
         push_back(val);
     }
@@ -62,6 +61,7 @@ void List_NS::List<T>::push_front(T const &value)
     Node *old_first{head->next.get()};
     head->next = std::make_unique<Node>(value, head.get(), std::move(head->next));
     old_first->prev = head->next.get();
+
     ++sz;
 }
 
@@ -77,6 +77,7 @@ void List_NS::List<T>::push_back(T const &value)
 template <typename T>
 bool List_NS::List<T>::empty() const noexcept
 {
+    // return head.get() == tail;
     return head->next.get() == tail;
 }
 
@@ -95,18 +96,21 @@ T &List_NS::List<T>::back() noexcept
 template <typename T>
 T List_NS::List<T>::front() const noexcept
 {
+    // return head->value
     return head->next->value;
 }
 
 template <typename T>
 T &List_NS::List<T>::front() noexcept
 {
+    // return head->value
     return head->next->value;
 }
 
 template <typename T>
 T &List_NS::List<T>::at(int idx)
 {
+    // return const_cast<T &>(static_cast<List const &>(*this).at(idx));
     return const_cast<T &>(static_cast<List_NS::List<T> const *>(this)->at(idx));
 }
 
@@ -115,6 +119,7 @@ T const &List_NS::List<T>::at(int idx) const
 {
     if (idx >= sz)
         throw std::out_of_range{"Index not found"};
+    // Node *tmp{head.get()};
     Node *tmp{head->next.get()};
     while (idx > 0)
     {
@@ -241,7 +246,8 @@ bool List_NS::List<T>::List_Iterator::operator!=(const List_Iterator &rhs) const
 template <typename T>
 typename List_NS::List<T>::List_Iterator List_NS::List<T>::begin()
 {
-    return List_Iterator(head.get());
+    // return List_Iterator(head.get());
+    return List_Iterator((head->next).get());
 }
 
 // end
@@ -255,5 +261,6 @@ typename List_NS::List<T>::List_Iterator List_NS::List<T>::end()
 template <typename T>
 typename List_NS::List<T>::List_Iterator::pointer List_NS::List<T>::List_Iterator::operator->() const
 {
-    return &(operator*());
+    // return &(operator*());
+    return &(curr->value);
 }

@@ -8,6 +8,8 @@
 TEST_CASE("Create list")
 {
     List_NS::List<int> lst{1, 4, 2, 6, 8, 9};
+
+    CHECK(lst.at(0) == 1);
     CHECK(lst.at(2) == 2);
     CHECK(lst.size() == 6);
     List_NS::List<int> l2;
@@ -55,140 +57,112 @@ TEST_CASE("Reverse Iterator")
         --size;
     }
 }
-// skiter i fler kommentarer, onödigt då så pass uppenbart vas som testas
-// TEST_CASE("Iterator")
-// {
-//     List_NS::List<int> l1{1, 7, 3, 4, 5};
-//     auto rb{l1.begin()};
-//     auto re{l1.end()};
-
-//     int size{0};
-//     for (auto it{rb}; it != re; ++it)
-//     {
-//         CHECK(*it == l1.at(size));
-//         ++size;
-//     }
-// }
-
-// TEST_CASE("Iterator preincrement")
-// {
-//     List_NS::List<int> l1{1, 5, 3, 8};
-//     auto it1{l1.begin()};
-//     auto it2{it1};
-
-//     it2 = ++it1;
-//     CHECK(*it1 == 5);
-//     CHECK(*it2 == 5);
-
-//     it2 = ++it1;
-//     CHECK(*it1 == 3);
-//     CHECK(*it2 == 3);
-// }
-
-// TEST_CASE("Iterator postincrement")
-// {
-//     List_NS::List<int> l1{1, 5, 3, 8};
-//     auto it1{l1.begin()};
-//     auto it2{it1};
-
-//     CHECK(*(it1++) == 1);
-//     CHECK(*(it2++) == 1);
-
-//     CHECK(*(it1++) == 5);
-//     CHECK(*(it2++) == 5);
-// }
-
-// TEST_CASE("Iterator predecrement")
-// {
-//     List_NS::List<int> l1{1, 5, 3, 8};
-//     auto it1{l1.end()};
-
-//     CHECK(*it1 == 0);
-//     --it1;
-//     CHECK(*it1 == 8);
-
-//     CHECK(*it1 == 8);
-//     --it1;
-//     CHECK(*it1 == 3);
-// }
-
-// TEST_CASE("Iterator postdecrement")
-// {
-//     List_NS::List<int> l1{1, 5, 3, 8};
-//     auto it1{l1.end()};
-
-//     CHECK(*it1 == 0);
-//     CHECK(*(it1--) == 0);
-
-//     CHECK(*it1 == 8);
-//     CHECK(*(it1--) == 8);
-// }
-
-// TEST_CASE("Iterator operator ==")
-// {
-//     List_NS::List<int> l1{1, 5, 3, 8};
-//     auto rb{l1.begin()};
-//     auto re{l1.end()};
-
-//     auto it1{rb};
-//     auto it2{rb};
-
-//     CHECK(*it1 == *it2);
-// }
-
-// TEST_CASE("Iterator operator !=")
-// {
-//     List_NS::List<int> l1{1, 5, 3, 8};
-//     auto rb{l1.begin()};
-//     auto re{l1.end()};
-
-//     auto it1{rb};
-//     auto it2{re};
-
-//     CHECK(*it1 != *it2);
-// }
-
-// TEST_CASE("Iterator *")
-// {
-//     List_NS::List<int> l1{1, 5, 3, 8};
-//     List_NS::List<std::string> l2{"hello", "hola"};
-//     auto rb = l1.begin();
-//     auto sb = l2.begin();
-
-//     CHECK(*rb == 1);
-//     ++rb;
-//     CHECK(*rb == 5);
-
-//     CHECK(*sb == "hello");
-//     ++sb;
-//     CHECK(*sb == "hola");
-// }
 TEST_CASE("Iterator")
 {
-    SECTION(" increment ")
-    {
-        List_NS::List<int> lst{2, 3, 1, 5};
-        std::stringstream ss;
-        for (auto it = lst.begin(); it != lst.end(); ++it)
-        {
-            ss << *it << ' ';
-        }
+    List_NS::List<int> l1{1, 7, 3, 4, 5};
+    auto rb{l1.begin()};
+    auto re{l1.end()};
 
-        CHECK(ss.str() == "2 3 1 5 ");
-    }
-    SECTION(" decrement ")
+    int size{0};
+    for (auto it{rb}; it != re; ++it)
     {
-        List_NS::List<int> lst{2, 3, 1, 5};
-        std::stringstream ss;
-        auto rb{std::make_reverse_iterator(lst.end())};
-        auto re{std::make_reverse_iterator(lst.begin())};
-        for (auto it = rb; it != re; ++it)
-        {
-            ss << (*it) << ' ';
-        }
-
-        CHECK(ss.str() == "5 1 3 2 ");
+        CHECK(*it == l1.at(size));
+        ++size;
     }
+}
+
+TEST_CASE("Iterator preincrement")
+{
+    List_NS::List<int> l1{1, 5, 3, 8};
+    auto it1{l1.begin()};
+    auto it2{it1};
+
+    it2 = ++it1;
+    CHECK(*it1 == 5);
+    CHECK(*it2 == 5);
+
+    it2 = ++it1;
+    CHECK(*it1 == 3);
+    CHECK(*it2 == 3);
+}
+
+TEST_CASE("Iterator postincrement")
+{
+    List_NS::List<int> l1{1, 5, 3, 8};
+    auto it1{l1.begin()};
+    auto it2{it1};
+
+    CHECK(*(it1++) == 1);
+    CHECK(*(it2++) == 1);
+
+    CHECK(*(it1++) == 5);
+    CHECK(*(it2++) == 5);
+}
+
+TEST_CASE("Iterator predecrement")
+{
+    List_NS::List<int> l1{1, 5, 3, 8};
+    auto it1{l1.end()};
+
+    CHECK(*it1 == 0);
+    --it1;
+    CHECK(*it1 == 8);
+
+    CHECK(*it1 == 8);
+    --it1;
+    CHECK(*it1 == 3);
+}
+
+TEST_CASE("Iterator postdecrement")
+{
+    List_NS::List<int> l1{1, 5, 3, 8};
+    auto it1{l1.end()};
+
+    CHECK(*it1 == 0);
+    CHECK(*(it1--) == 0);
+
+    CHECK(*it1 == 8);
+    CHECK(*(it1--) == 8);
+}
+
+TEST_CASE("Iterator operator ==")
+{
+    List_NS::List<int> l1{1, 5, 3, 8};
+    auto rb{l1.begin()};
+    auto re{l1.end()};
+
+    auto it1{rb};
+    auto it2{rb};
+
+    CHECK(*it1 == *it2);
+}
+
+TEST_CASE("Iterator operator !=")
+{
+    List_NS::List<int> l1{1, 5, 3, 8};
+    auto rb{l1.begin()};
+    auto re{l1.end()};
+
+    auto it1{rb};
+    auto it2{re};
+
+    CHECK(*it1 != *it2);
+}
+
+TEST_CASE("Iterator *")
+{
+    List_NS::List<int> l1{1, 5, 3, 8};
+    List_NS::List<std::string> l2{"hello", "hola"};
+    auto rb = l1.begin();
+    auto sb = l2.begin();
+
+    CHECK(*rb == 1);
+    ++rb;
+    CHECK(*rb == 5);
+
+    CHECK(*sb == "hello");
+    ++sb;
+    CHECK(*sb == "hola");
 }
 TEST_CASE("Other datatypes")
 {
