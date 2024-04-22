@@ -159,28 +159,58 @@ vector<string> Edit::substitute(filtered_arguments filtered_args, vector<string>
   return new_text;
 }
 
+// vector<string> Edit::remove(filtered_arguments filtered_args, vector<string> text)
+// {
+
+//   vector<string> param{filtered_args.parameters};
+//   vector<string> flag{filtered_args.flags};
+//   string remove_word{};
+
+//   vector<string> new_text{text};
+
+//   for_each(flag.begin(), flag.end(),
+//            [&remove_word, &param](string s)
+//            {
+//              int tmp{};
+//              ++tmp;
+//              if (s == "--remove")
+//              {
+//                remove_word = param.at(tmp);
+//              }
+//            });
+
+//   cout << remove_word << endl;
+//   new_text.erase(std::remove(new_text.begin(), new_text.end(), remove_word), new_text.end());
+
+//   return new_text;
+// }
 vector<string> Edit::remove(filtered_arguments filtered_args, vector<string> text)
 {
-
-  vector<string> param{filtered_args.parameters};
-  vector<string> flag{filtered_args.flags};
+  vector<string> params{filtered_args.parameters};
+  vector<string> flags{filtered_args.flags};
   string remove_word{};
 
-  vector<string> new_text{text};
+  for (size_t i = 0; i < flags.size(); ++i)
+  {
+    if (flags[i] == "--remove")
+    {
+      if (i < params.size())
+      {
+        remove_word = params[i];
+        break;
+      }
+    }
+  }
 
-  for_each(flag.begin(), flag.end(),
-           [&remove_word, &param](string s)
-           {
-             int tmp{};
-             ++tmp;
-             if (s == "--remove")
-             {
-               remove_word = param.at(tmp);
-             }
-           });
+  if (!remove_word.empty())
+  {
+    cout << "Removing word: " << remove_word << endl;
+    text.erase(std::remove(text.begin(), text.end(), remove_word), text.end());
+  }
+  else
+  {
+    cout << "No word to remove or word not found in parameters." << endl;
+  }
 
-  cout << remove_word << endl;
-  new_text.erase(std::remove(new_text.begin(), new_text.end(), remove_word), new_text.end());
-
-  return new_text;
+  return text;
 }

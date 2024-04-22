@@ -4,10 +4,6 @@
 #include <fstream>
 // #include <Edit.h>
 
-// check for arg - samla in och radera .out & .txt
-// file stream - read from text och dela i vector.
-// dela flagor och parametrar
-
 int main(int argc, char *argv[])
 
 {
