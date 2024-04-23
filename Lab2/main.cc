@@ -85,6 +85,13 @@ int main(int argc, char *argv[])
   std::vector<std::string> arguments{};
   std::ifstream file{};
   std::vector<std::string> text;
+  if (argc == 1)
+  {
+    std::cout << "ERROR: Missing arguments. \n"
+                 "Usage: ./a.out filename.txt --flag \n"
+                 "Flags: print, frequency, table, substitute<old>+<new>, remove<word>"
+              << std::endl;
+  }
 
   obj.open_file(argv[1], file);
   text = obj.convert_text(file);
