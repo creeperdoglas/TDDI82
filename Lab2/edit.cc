@@ -89,16 +89,18 @@ filtered_arguments Edit::filter_arguments(vector<string> arguments)
 
   for (const auto &arg : arguments)
   {
+    if (arg.substr(0, 2) != "--") // Check if the flag doesn't start with "--"
+    {
+      throw std::invalid_argument("ERROR: Flags should be prefixed with '--'. Invalid flag: " + arg);
+    }
     int first = arg.find("--");
     int second = arg.find("=");
 
-    // Add the flag to the `flags` vector
     if (first != string::npos)
     {
       string flag_str = arg.substr(first, second - first);
       new_args.flags.push_back(flag_str);
 
-      // Add the parameter to `parameters` if present
       if (second != string::npos)
       {
         string parameter_str = arg.substr(second + 1);

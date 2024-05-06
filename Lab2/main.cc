@@ -28,7 +28,7 @@
 /// fixade med den nya main metoden
 
 // Komplettering: Använd const& för att undvika onödig kopiering (se även parametrar till lambda)
-/// fixat, dubbelkolla lamda dock
+/// fixat
 
 // Komplettering: Ta inte in alla argument i remove och substitute
 /// fixat, gjorde även om filter_arguments för att de skulle funka
@@ -38,65 +38,90 @@
 
 // Kommentar: Klassen har inget riktigt syfte
 
+void process_print(Edit &obj, const std::vector<std::string> &text)
+{
+  std::cout << "Text:\n";
+  obj.print(text);
+}
+
+void process_table(Edit &obj, const std::vector<std::string> &text)
+{
+  std::cout << "Table:\n";
+  obj.table(text);
+}
+
+void process_frequency(Edit &obj, const std::vector<std::string> &text)
+{
+  std::cout << "Frequency:\n";
+  obj.frequency(text);
+}
+
+void process_substitute(Edit &obj, std::vector<std::string> &text, const filtered_arguments &new_args)
+{
+  auto substitute_flag_idx = std::find(new_args.flags.begin(), new_args.flags.end(), "--substitute") - new_args.flags.begin();
+
+  if (substitute_flag_idx < new_args.parameters.size() && !new_args.parameters[substitute_flag_idx].empty())
+  {
+    // Check if the parameter contains a '+'
+    if (new_args.parameters[substitute_flag_idx].find('+') != std::string::npos)
+    {
+      std::cout << "Text with substituted words:\n";
+      text = obj.substitute(new_args, text);
+      obj.print(text);
+    }
+    else
+    {
+      throw std::invalid_argument("ERROR: Incorrect parameter for --substitute flag. Should be --substitute=<old>+<new>");
+    }
+  }
+  else
+  {
+    throw std::invalid_argument("ERROR: Missing parameter for --substitute flag. Should be --substitute=<old>+<new>");
+  }
+}
+
+void process_remove(Edit &obj, std::vector<std::string> &text, const filtered_arguments &new_args)
+{
+  auto remove_flag_idx = std::find(new_args.flags.begin(), new_args.flags.end(), "--remove") - new_args.flags.begin();
+  if (remove_flag_idx < new_args.parameters.size() && !new_args.parameters[remove_flag_idx].empty())
+  {
+    std::cout << "Text with removed words:\n";
+    text = obj.remove(new_args, text);
+    obj.print(text);
+  }
+  else
+  {
+    throw std::invalid_argument("ERROR: Missing parameter for --remove flag. Should be --remove=<word>");
+  }
+}
+
 void run_flags(Edit &obj, std::vector<std::string> &text, const filtered_arguments &new_args)
 {
   for (const std::string &s : new_args.flags)
   {
     if (s == "--print")
     {
-      std::cout << "Text:\n";
-      obj.print(text);
+      process_print(obj, text);
     }
     else if (s == "--table")
     {
-      std::cout << "Table:\n";
-      obj.table(text);
+      process_table(obj, text);
     }
     else if (s == "--frequency")
     {
-      std::cout << "Frequency:\n";
-      obj.frequency(text);
+      process_frequency(obj, text);
     }
     else if (s == "--substitute")
     {
-      auto substitute_flag_idx = std::find(new_args.flags.begin(), new_args.flags.end(), "--substitute") - new_args.flags.begin();
-
-      if (substitute_flag_idx < new_args.parameters.size() && !new_args.parameters[substitute_flag_idx].empty())
-      {
-        // Check if the parameter contains a '+'
-        if (new_args.parameters[substitute_flag_idx].find('+') != std::string::npos)
-        {
-          std::cout << "Text with substituted words:\n";
-          text = obj.substitute(new_args, text);
-          obj.print(text);
-        }
-        else
-        {
-          throw std::invalid_argument("ERROR: Incorrect parameter for --substitute flag. Should be --substitute=<old>+<new>");
-        }
-      }
-      else
-      {
-        throw std::invalid_argument("ERROR: Missing parameter for --substitute flag. Should be --substitute=<old>+<new>");
-      }
+      process_substitute(obj, text, new_args);
     }
     else if (s == "--remove")
     {
-      auto remove_flag_idx = std::find(new_args.flags.begin(), new_args.flags.end(), "--remove") - new_args.flags.begin();
-      if (remove_flag_idx < new_args.parameters.size() && !new_args.parameters[remove_flag_idx].empty())
-      {
-        std::cout << "Text with removed words:\n";
-        text = obj.remove(new_args, text);
-        obj.print(text);
-      }
-      else
-      {
-        throw std::invalid_argument("ERROR: Missing parameter for --remove flag. Should be --remove=<word>");
-      }
+      process_remove(obj, text, new_args);
     }
     else
     {
-      throw std::invalid_argument("ERROR: Invalid flag " + s + "." + " Flags: --print, --frequency, --table, --substitute<old>+<new>, --remove=<word>");
+      throw std::invalid_argument("ERROR: Invalid flag " + s + ". Flags: --print, --frequency, --table, --substitute<old>+<new>, --remove=<word>");
     }
   }
 }
@@ -111,16 +136,88 @@ void check_args(int argc, Edit obj, std::vector<std::string> text, filtered_argu
               << std::endl;
   }
 
-  else if (argc > 2 && argc < 8)
+  else if (argc >= 2 && argc < 8)
   {
+
+    for (const std::string &flag : new_args.flags)
+    {
+      if (flag.substr(0, 2) != "--" && flag.substr(0, 1) != "-")
+      {
+        throw std::invalid_argument("ERROR: Flags should be prefixed with '--'. Invalid flag: " + flag);
+      }
+      if (flag != "--print" && flag != "--table" && flag != "--frequency" && flag != "--substitute" && flag != "--remove")
+      {
+        throw std::invalid_argument("ERROR: Invalid flag " + flag + ". Flags: --print, --frequency, --table, --substitute<old>+<new>, --remove=<word>");
+      }
+    }
     run_flags(obj, text, new_args);
   }
-
   else if (argc > 7)
   {
     throw std::invalid_argument("ERROR: Too many arguments.");
-    // std::cout << "ERROR: Too many arguments." << std::endl;
   }
+}
+int process_file(const std::string &file_name, std::vector<std::string> &text, Edit &obj)
+{
+  std::ifstream file;
+
+  try
+  {
+    obj.open_file(file_name, file);
+
+    if (!file.is_open())
+    {
+      throw std::ifstream::failure("File does not exist or cannot be opened: " + file_name);
+    }
+
+    text = obj.convert_text(file);
+    file.close();
+
+    if (text.empty())
+    {
+      throw std::invalid_argument("ERROR: The file '" + file_name + "' is empty.");
+    }
+  }
+  catch (const std::ifstream::failure &)
+  {
+    std::cerr << "File does not exist or cannot be opened: " << file_name << std::endl;
+    return 1;
+  }
+  catch (const std::invalid_argument &e)
+  {
+    std::cerr << e.what() << std::endl;
+    return 1;
+  }
+
+  return 0;
+}
+
+int process_arguments(int argc, char *argv[], std::vector<std::string> &text, Edit &obj, filtered_arguments &new_args)
+{
+
+  std::vector<std::string> arguments = obj.get_arguments(argc, argv);
+
+  try
+  {
+    new_args = obj.filter_arguments(arguments);
+  }
+  catch (const std::invalid_argument &e)
+  {
+    std::cerr << e.what() << std::endl;
+    return 1;
+  }
+
+  try
+  {
+    check_args(argc, obj, text, new_args);
+  }
+  catch (const std::invalid_argument &e)
+  {
+    std::cerr << e.what() << std::endl;
+    return 1;
+  }
+
+  return 0;
 }
 
 int main(int argc, char *argv[])
@@ -145,52 +242,16 @@ int main(int argc, char *argv[])
   }
 
   std::vector<std::string> text;
-
-  std::ifstream file;
   Edit obj;
+  filtered_arguments new_args;
 
-  try
+  if (process_file(file_name, text, obj) != 0)
   {
-    obj.open_file(file_name, file);
-
-    // If the file couldn't be opened, handle the error
-    if (!file.is_open())
-    {
-      throw std::ifstream::failure("File does not exist or cannot be opened: " + file_name);
-    }
-
-    // Convert file content to text
-    text = obj.convert_text(file);
-    file.close();
-
-    // Check if the file content is empty
-    if (text.empty())
-    {
-      throw std::invalid_argument("ERROR: The file '" + file_name + "' is empty.");
-    }
-  }
-  catch (const std::ifstream::failure &)
-  {
-    std::cerr << "File does not exist or cannot be opened: " << file_name << std::endl;
-    return 1;
-  }
-  catch (const std::invalid_argument &e)
-  {
-    std::cerr << e.what() << std::endl;
     return 1;
   }
 
-  // Process additional arguments
-  std::vector<std::string> arguments = obj.get_arguments(argc, argv);
-  filtered_arguments new_args = obj.filter_arguments(arguments);
-
-  try
+  if (process_arguments(argc, argv, text, obj, new_args) != 0)
   {
-    check_args(argc, obj, text, new_args);
-  }
-  catch (const std::invalid_argument &e)
-  {
-    std::cerr << e.what() << std::endl;
     return 1;
   }
 
