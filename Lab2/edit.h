@@ -5,6 +5,7 @@
 #include <vector>
 #include <fstream>
 #include <algorithm>
+#include <map>
 
 struct filtered_arguments
 {
@@ -23,15 +24,17 @@ public:
   filtered_arguments filter_arguments(std::vector<std::string> arguments);
 
   void print(std::vector<std::string> text);
-  void frequency(std::vector<std::string> text);
-  void table(std::vector<std::string> text);
+  void frequency(const std::vector<std::string> &text);
+  void table(const std::vector<std::string> &text);
   std::vector<std::string> substitute(filtered_arguments filtered_args,
                                       std::vector<std::string> text);
   std::vector<std::string> remove(filtered_arguments filtered_args,
                                   std::vector<std::string> text);
 
 private:
+  // static map<std::string, unsigned int> count_word_frequency(const std::vector<std::string> &text);
   std::string get_largest_word(std::vector<std::string> text);
+  static std::map<std::string, unsigned int> count_word_frequency(const std::vector<std::string> &text);
   std::string word_new{};
   std::string word_old{};
 };

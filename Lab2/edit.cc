@@ -20,6 +20,15 @@ string Edit::get_largest_word(vector<string> text)
                         });
   return *it;
 }
+map<string, unsigned int> Edit::count_word_frequency(const vector<string> &text)
+{
+  map<string, unsigned int> word_count;
+  for (const auto &word : text)
+  {
+    ++word_count[word];
+  }
+  return word_count;
+}
 
 void Edit::open_file(string file_name, ifstream &file)
 {
@@ -78,53 +87,37 @@ void Edit::print(vector<string> text)
            { cout << s << " "; });
   cout << endl;
 }
-
-void Edit::frequency(vector<string> text)
+void Edit::frequency(const vector<string> &text)
 {
+  map<string, unsigned int> word_count = count_word_frequency(text);
+  vector<pair<string, unsigned int>> word_pairs(word_count.begin(), word_count.end());
 
-  string word = get_largest_word(text);
-
-  auto print = [&word](pair<string, unsigned int> item)
-  {
-    cout << setw(word.size()) << item.first << " " << item.second << endl;
-  };
-  auto compare = [](pair<string, unsigned int> const &lhs, pair<string, unsigned int> const &rhs)
+  auto compare = [](const auto &lhs, const auto &rhs)
   {
     return lhs.second > rhs.second;
   };
-  map<string, unsigned int> map_words;
+  sort(word_pairs.begin(), word_pairs.end(), compare);
 
-  for_each(text.begin(), text.end(), [&map_words](string s)
-           { map_words[s]++; });
-  vector<pair<string, unsigned int>> setofwords{map_words.begin(), map_words.end()};
+  string largest_word = get_largest_word(text);
 
-  sort(setofwords.begin(), setofwords.end(), compare);
-
-  for_each(setofwords.begin(), setofwords.end(), print);
-}
-
-void Edit::table(vector<string> text)
-{
-
-  vector<string> tmp{text};
-  sort(tmp.begin(), tmp.end());
-
-  string word = get_largest_word(text);
-
-  auto print = [&word](pair<string, unsigned int> item)
+  for (const auto &item : word_pairs)
   {
-    cout << left << setw(word.size()) << item.first << " " << item.second << endl;
-  };
-
-  map<string, unsigned int> map_words;
-
-  for_each(text.begin(), text.end(), [&map_words](string s)
-           { map_words[s]++; });
-  vector<pair<string, unsigned int>> setofwords{map_words.begin(), map_words.end()};
-
-  for_each(setofwords.begin(), setofwords.end(), print);
+    cout << setw(largest_word.size()) << item.first << " " << item.second << endl;
+  }
 }
 
+void Edit::table(const vector<string> &text)
+{
+  map<string, unsigned int> word_count = count_word_frequency(text);
+  vector<pair<string, unsigned int>> word_pairs(word_count.begin(), word_count.end());
+
+  string largest_word = get_largest_word(text);
+
+  for (const auto &item : word_pairs)
+  {
+    cout << left << setw(largest_word.size()) << item.first << " " << item.second << endl;
+  }
+}
 vector<string> Edit::substitute(filtered_arguments filtered_args, vector<string> text)
 {
 
@@ -159,32 +152,6 @@ vector<string> Edit::substitute(filtered_arguments filtered_args, vector<string>
   return new_text;
 }
 
-// gammla remove, funkade inte pga att tmp alltid blev 1 pga att den var i for loopen, och då out of range kastas vid 0 eller 1 så funkade det inte
-//  vector<string> Edit::remove(filtered_arguments filtered_args, vector<string> text)
-//  {
-
-//   vector<string> param{filtered_args.parameters};
-//   vector<string> flag{filtered_args.flags};
-//   string remove_word{};
-
-//   vector<string> new_text{text};
-
-//   for_each(flag.begin(), flag.end(),
-//            [&remove_word, &param](string s)
-//            {
-//              int tmp{};
-//              ++tmp;
-//              if (s == "--remove")
-//              {
-//                remove_word = param.at(tmp);
-//              }
-//            });
-
-//   cout << remove_word << endl;
-//   new_text.erase(std::remove(new_text.begin(), new_text.end(), remove_word), new_text.end());
-
-//   return new_text;
-// }
 vector<string> Edit::remove(filtered_arguments filtered_args, vector<string> text)
 {
   vector<string> params{filtered_args.parameters};
