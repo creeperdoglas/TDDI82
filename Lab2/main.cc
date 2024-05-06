@@ -28,10 +28,13 @@
 /// fixade med den nya main metoden
 
 // Komplettering: Använd const& för att undvika onödig kopiering (se även parametrar till lambda)
+/// fixat, dubbelkolla lamda dock
 
 // Komplettering: Ta inte in alla argument i remove och substitute
+/// fixat, gjorde även om filter_arguments för att de skulle funka
 
 // Komplettering: Det finns en mer lämplig algoritm för att kopiera från filen till en vektor. (eller konstruktor)
+/// fixat
 
 // Kommentar: Klassen har inget riktigt syfte
 
@@ -56,29 +59,44 @@ void run_flags(Edit &obj, std::vector<std::string> &text, const filtered_argumen
     }
     else if (s == "--substitute")
     {
-      // Ensure parameters are provided
-      if (new_args.parameters.empty())
+      auto substitute_flag_idx = std::find(new_args.flags.begin(), new_args.flags.end(), "--substitute") - new_args.flags.begin();
+
+      if (substitute_flag_idx < new_args.parameters.size() && !new_args.parameters[substitute_flag_idx].empty())
+      {
+        // Check if the parameter contains a '+'
+        if (new_args.parameters[substitute_flag_idx].find('+') != std::string::npos)
+        {
+          std::cout << "Text with substituted words:\n";
+          text = obj.substitute(new_args, text);
+          obj.print(text);
+        }
+        else
+        {
+          throw std::invalid_argument("ERROR: Incorrect parameter for --substitute flag. Should be --substitute=<old>+<new>");
+        }
+      }
+      else
       {
         throw std::invalid_argument("ERROR: Missing parameter for --substitute flag. Should be --substitute=<old>+<new>");
       }
-      std::cout << "Text with substituted words:\n";
-      text = obj.substitute(new_args, text);
-      obj.print(text);
     }
     else if (s == "--remove")
     {
-      // Ensure parameters are provided
-      if (new_args.parameters.empty())
+      auto remove_flag_idx = std::find(new_args.flags.begin(), new_args.flags.end(), "--remove") - new_args.flags.begin();
+      if (remove_flag_idx < new_args.parameters.size() && !new_args.parameters[remove_flag_idx].empty())
       {
-        throw std::invalid_argument("ERROR: Missing parameter for --remove flag. Should be --remove<word>");
+        std::cout << "Text with removed words:\n";
+        text = obj.remove(new_args, text);
+        obj.print(text);
       }
-      std::cout << "Text with removed words:\n";
-      text = obj.remove(new_args, text);
-      obj.print(text);
+      else
+      {
+        throw std::invalid_argument("ERROR: Missing parameter for --remove flag. Should be --remove=<word>");
+      }
     }
     else
     {
-      throw std::invalid_argument("ERROR: Invalid flag " + s + "." + " Flags: --print, --frequency, --table, --substitute<old>+<new>, --remove<word>");
+      throw std::invalid_argument("ERROR: Invalid flag " + s + "." + " Flags: --print, --frequency, --table, --substitute<old>+<new>, --remove=<word>");
     }
   }
 }
@@ -127,6 +145,7 @@ int main(int argc, char *argv[])
   }
 
   std::vector<std::string> text;
+
   std::ifstream file;
   Edit obj;
 
