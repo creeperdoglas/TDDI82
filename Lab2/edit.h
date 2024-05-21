@@ -30,6 +30,7 @@ public:
                                       std::vector<std::string> text);
   std::vector<std::string> remove(const filtered_arguments &filtered_args,
                                   std::vector<std::string> text);
+  void print_word_counts(const std::map<std::string, unsigned int> &word_count, const std::string &largest_word, bool left_align);
 
 private:
   std::string get_largest_word(const std::vector<std::string> &text);

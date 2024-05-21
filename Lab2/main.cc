@@ -15,28 +15,13 @@
 //   Har ni frågor om kompletteringen kan ni maila mig på:
 //   Malte.Nilsson@liu.se
 
-// Komplettering: Ni ska ha felkontroller för alla typer av fel som kan uppstå vid körning. (filnamn saknas, fil existerar ej, saknad parameter till flagga, felaktig parameter till flagga, fel antal kommandoradsargument)
-/// Fixat
-
-// Komplettering: Fånga exceptions på lämpligt sätt. Användaren ska aldrig behöva se “Terminate called after...”.
-/// fixat.gjorde om main, nu slipper använder se terminate called after...
-
 // Komplettering: kodupprepning mellan frequency och table
 /// fixat, skapade count_word_frequency
-
-// Komplettering. Programmet gör flertalet saker utan att användaren har angett detta.
-/// fixade med den nya main metoden
+// Komplettering: Fixa så att for loopen inte är duplicerad
 
 // Komplettering: Använd const& för att undvika onödig kopiering (se även parametrar till lambda)
 /// fixat
-
-// Komplettering: Ta inte in alla argument i remove och substitute
-/// fixat, gjorde även om filter_arguments för att de skulle funka
-
-// Komplettering: Det finns en mer lämplig algoritm för att kopiera från filen till en vektor. (eller konstruktor)
-/// fixat
-
-// Kommentar: Klassen har inget riktigt syfte
+// Komplettering: Hittar fortfarande kopior
 
 void process_print(Edit &obj, const std::vector<std::string> &text)
 {

@@ -12,7 +12,6 @@ using namespace std;
 
 string Edit::get_largest_word(const vector<string> &text)
 {
-
   auto it = max_element(text.begin(), text.end(),
                         [](const auto &a, const auto &b)
                         {
@@ -20,6 +19,7 @@ string Edit::get_largest_word(const vector<string> &text)
                         });
   return *it;
 }
+
 map<string, unsigned int> Edit::count_word_frequency(const vector<string> &text)
 {
   map<string, unsigned int> word_count;
@@ -32,7 +32,6 @@ map<string, unsigned int> Edit::count_word_frequency(const vector<string> &text)
 
 void Edit::open_file(string file_name, ifstream &file)
 {
-
   file.open(file_name);
 }
 
@@ -49,12 +48,7 @@ vector<string> Edit::get_arguments(int argc, char *argv[])
 
 vector<string> Edit::convert_text(ifstream &file)
 {
-
-  vector<string> text{};
-  // for_each(istream_iterator<string>(file),
-  //          istream_iterator<string>(), [&text](string s)
-  //          { text.push_back(s); });
-  // return text;
+  vector<string> text;
   copy(istream_iterator<string>(file),
        istream_iterator<string>(),
        back_inserter(text));
@@ -62,34 +56,13 @@ vector<string> Edit::convert_text(ifstream &file)
   return text;
 }
 
-// filtered_arguments Edit::filter_arguments(vector<string> arguments)
-// {
-//   filtered_arguments new_args{};
-
-//   for_each(arguments.begin(), arguments.end(),
-//            [&new_args](string s)
-//            {
-//              int first = s.find("--");
-//              int second = s.find("=");
-
-//              string flag_str = s.substr(first, second - first);
-//              new_args.flags.push_back(flag_str);
-
-//              string parameter_str = s.substr(second + 1, s.length() - flag_str.length() - 1);
-
-//              if (s != flag_str)
-//                new_args.parameters.push_back(parameter_str);
-//            });
-
-//   return new_args;
-// }
 filtered_arguments Edit::filter_arguments(vector<string> arguments)
 {
   filtered_arguments new_args{};
 
   for (const auto &arg : arguments)
   {
-    if (arg.substr(0, 2) != "--") // Check if the flag doesn't start with "--"
+    if (arg.substr(0, 2) != "--")
     {
       throw std::invalid_argument("ERROR: Flags should be prefixed with '--'. Invalid flag: " + arg);
     }
@@ -118,11 +91,26 @@ filtered_arguments Edit::filter_arguments(vector<string> arguments)
 
 void Edit::print(const vector<string> &text)
 {
-
-  for_each(text.begin(), text.end(), [](string s)
+  for_each(text.begin(), text.end(), [](const string &s)
            { cout << s << " "; });
   cout << endl;
 }
+
+void Edit::print_word_counts(const map<string, unsigned int> &word_count, const string &largest_word, bool left_align = false)
+{
+  for (const auto &item : word_count)
+  {
+    if (left_align)
+    {
+      cout << left << setw(largest_word.size()) << item.first << " " << item.second << endl;
+    }
+    else
+    {
+      cout << setw(largest_word.size()) << item.first << " " << item.second << endl;
+    }
+  }
+}
+
 void Edit::frequency(const vector<string> &text)
 {
   map<string, unsigned int> word_count = count_word_frequency(text);
@@ -135,28 +123,18 @@ void Edit::frequency(const vector<string> &text)
   sort(word_pairs.begin(), word_pairs.end(), compare);
 
   string largest_word = get_largest_word(text);
-
-  for (const auto &item : word_pairs)
-  {
-    cout << setw(largest_word.size()) << item.first << " " << item.second << endl;
-  }
+  print_word_counts(word_count, largest_word);
 }
 
 void Edit::table(const vector<string> &text)
 {
   map<string, unsigned int> word_count = count_word_frequency(text);
-  vector<pair<string, unsigned int>> word_pairs(word_count.begin(), word_count.end());
-
   string largest_word = get_largest_word(text);
-
-  for (const auto &item : word_pairs)
-  {
-    cout << left << setw(largest_word.size()) << item.first << " " << item.second << endl;
-  }
+  print_word_counts(word_count, largest_word, true);
 }
+
 std::vector<std::string> Edit::remove(const filtered_arguments &filtered_args, std::vector<std::string> text)
 {
-
   for (size_t i = 0; i < filtered_args.flags.size(); ++i)
   {
     if (filtered_args.flags[i] == "--remove" && !filtered_args.parameters[i].empty())
@@ -196,68 +174,3 @@ std::vector<std::string> Edit::substitute(const filtered_arguments &filtered_arg
   }
   return text;
 }
-
-// vector<string> Edit::substitute(filtered_arguments filtered_args, vector<string> text)
-// {
-
-//   vector<string> param{filtered_args.parameters};
-//   vector<string> flag{filtered_args.flags};
-//   string old_word{};
-//   string new_word{};
-
-//   vector<string> new_text{text};
-
-//   for_each(flag.begin(), flag.end(),
-//            [&param, &old_word, &new_word](string s)
-//            {
-//              int tmp{};
-//              string tmp_param{};
-//              if (s != "--substitute")
-//              {
-
-//                tmp++;
-//              }
-//              else
-//              {
-//                tmp_param = param.at(tmp);
-
-//                old_word = tmp_param.substr(0, tmp_param.find("+"));
-//                new_word = tmp_param.substr(tmp_param.find("+") + 1);
-//              }
-//            });
-
-//   replace(new_text.begin(), new_text.end(), old_word, new_word);
-
-//   return new_text;
-// }
-
-// vector<string> Edit::remove(const filtered_arguments &filtered_args, vector<string> text)
-// {
-//   vector<string> params{filtered_args.parameters};
-//   vector<string> flags{filtered_args.flags};
-//   string remove_word{};
-
-//   for (size_t i = 0; i < flags.size(); ++i)
-//   {
-//     if (flags[i] == "--remove")
-//     {
-//       if (i < params.size())
-//       {
-//         remove_word = params[i];
-//         break;
-//       }
-//     }
-//   }
-
-//   if (!remove_word.empty())
-//   {
-//     cout << "Removing word: " << remove_word << endl;
-//     text.erase(remove(text.begin(), text.end(), remove_word), text.end());
-//   }
-//   else
-//   {
-//     cout << "No word to remove or word not found in parameters." << endl;
-//   }
-
-//   return text;
-// }
