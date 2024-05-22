@@ -37,8 +37,7 @@ void Edit::open_file(const string &file_name, ifstream &file)
 
 vector<string> Edit::get_arguments(int argc, char *argv[])
 {
-  vector<string> args{argv, argv + argc};
-  args.erase(args.begin(), args.begin() + 2);
+  vector<string> args(argv + 2, argv + argc);
   return args;
 }
 
@@ -111,7 +110,7 @@ void Edit::frequency(const vector<string> &text)
   map<string, unsigned int> word_count = count_word_frequency(text);
   vector<pair<string, unsigned int>> word_pairs(word_count.begin(), word_count.end());
 
-  auto compare = [](const auto &lhs, const auto &rhs)
+  auto compare = [](const pair<const string, unsigned int> &lhs, const pair<const string, unsigned int> &rhs)
   {
     return lhs.second > rhs.second;
   };
@@ -138,7 +137,7 @@ std::vector<std::string> Edit::remove(const filtered_arguments &filtered_args, s
   {
     if (filtered_args.flags[i] == "--remove" && !filtered_args.parameters[i].empty())
     {
-      std::string word_to_remove = filtered_args.parameters[i];
+      const std::string &word_to_remove = filtered_args.parameters[i];
       std::cout << "Removing word: " << word_to_remove << std::endl;
       text.erase(std::remove(text.begin(), text.end(), word_to_remove), text.end());
     }
@@ -156,7 +155,7 @@ std::vector<std::string> Edit::substitute(const filtered_arguments &filtered_arg
   {
     if (filtered_args.flags[i] == "--substitute" && !filtered_args.parameters[i].empty())
     {
-      std::string param = filtered_args.parameters[i];
+      const std::string &param = filtered_args.parameters[i];
       size_t plus_pos = param.find("+");
       if (plus_pos != std::string::npos)
       {
