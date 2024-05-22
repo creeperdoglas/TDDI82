@@ -18,10 +18,14 @@
 // Komplettering: kodupprepning mellan frequency och table
 /// fixat, skapade count_word_frequency
 // Komplettering: Fixa så att for loopen inte är duplicerad
+/// fixat, nu så anropar print_word_counts
 
 // Komplettering: Använd const& för att undvika onödig kopiering (se även parametrar till lambda)
 /// fixat
 // Komplettering: Hittar fortfarande kopior
+/// la till & i check_args och i main
+/// i edit så har nu open file const string &file, filter arguments const vector<string> &arguments
+/// I lambdafunktionerna i print och frequency används nu const string &s istället för string s för att undvika onödig kopiering och även för frequency så är pair const för att slippa onödig kopiering.
 
 void process_print(Edit &obj, const std::vector<std::string> &text)
 {
@@ -111,7 +115,7 @@ void run_flags(Edit &obj, std::vector<std::string> &text, const filtered_argumen
   }
 }
 
-void check_args(int argc, Edit obj, std::vector<std::string> text, filtered_arguments new_args)
+void check_args(int argc, Edit &obj, std::vector<std::string> &text, const filtered_arguments &new_args)
 {
   if (argc == 2)
   {
