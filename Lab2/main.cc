@@ -26,6 +26,7 @@
 /// la till & i check_args och i main
 /// i edit så har nu open file const string &file, filter arguments const vector<string> &arguments
 /// I lambdafunktionerna i print och frequency används nu const string &s istället för string s för att undvika onödig kopiering och även för frequency så är pair const för att slippa onödig kopiering.
+/// och så vidare ändrade i sub, remove, get largest word och frequency
 
 void process_print(Edit &obj, const std::vector<std::string> &text)
 {
